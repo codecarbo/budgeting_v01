@@ -4,6 +4,8 @@ import tray
 
 # TODO: fix stuff (see output)
 # # duplicates are not dropped
+# # TODO: pandas removes 0 after . somehow, entries are not identical
+# # # maybe work with , numbers instead and keep separator as ; ??
 
 # Take new input data of both accounts and concatenate
 # Clean new data: delete irrelevant columns
@@ -36,15 +38,19 @@ data_new = data_import.drop(data_import.columns.difference(relevant_cols), axis=
 data_new['Valutadatum'] = pd.to_datetime(data_new['Valutadatum'], format='%d.%m.%Y', errors='coerce')
 # # no errors for empty cells
 
-# # Replace , with . for values and convert to int
-# data_new['Betrag'] = data_new['Betrag'].str.replace(',', '.')
+# # Replace , with . for values
+print("before")
+print(data_new['Betrag'])
+data_new['Betrag'] = data_new['Betrag'].str.replace(',', '.')
+print("after")
+print(data_new['Betrag'])
 # pd.to_numeric(data_new['Betrag'], errors='coerce')
-# data_new['Saldo nach Buchung'] = data_new['Saldo nach Buchung'].str.replace(',', '.')
+data_new['Saldo nach Buchung'] = data_new['Saldo nach Buchung'].str.replace(',', '.')
 # pd.to_numeric(data_new['Saldo nach Buchung'], errors='coerce')
 
 # Add new data to existing data
 # # backup existing data
-shutil.copyfile("data/test_output/data_all.csv", "data/test_output/data_all_backup.csv")
+# shutil.copyfile("data/test_output/data_all.csv", "data/test_output/data_all_backup.csv")
 # index_col: read first column as index column
 data_all = pd.read_csv("data/test_output/data_all.csv",
                        index_col=0, parse_dates=['Valutadatum'])
