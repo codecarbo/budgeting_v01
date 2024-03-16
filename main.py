@@ -1,11 +1,6 @@
 import pandas as pd
-import shutil
+# import shutil
 import tray
-
-# TODO: fix stuff (see output)
-# # duplicates are not dropped
-# # TODO: pandas removes 0 after . somehow, entries are not identical
-# # # maybe work with , numbers instead and keep separator as ; ??
 
 # Take new input data of both accounts and concatenate
 # Clean new data: delete irrelevant columns
@@ -22,10 +17,9 @@ import tray
 
 path = input("File path: ")
 
-data_import = pd.read_csv(path,
-                          sep=';', on_bad_lines='warn')
+data_import = pd.read_csv(path, sep=';', on_bad_lines='warn')
 
-# Only relevant cols
+# Define relevant cols
 relevant_cols = ['IBAN Auftragskonto',
                  'Valutadatum',
                  'Name Zahlungsbeteiligter',
@@ -35,33 +29,57 @@ relevant_cols = ['IBAN Auftragskonto',
 
 # data_new = data[relevant_cols] this is only a selection!
 data_new = data_import.drop(data_import.columns.difference(relevant_cols), axis=1)  # axis=1: columns
+
+count_rows_new = len(data_new.index)
+
+# format data
 data_new['Valutadatum'] = pd.to_datetime(data_new['Valutadatum'], format='%d.%m.%Y', errors='coerce')
 # # no errors for empty cells
 
 # # Replace , with . for values
-print("before")
-print(data_new['Betrag'])
-data_new['Betrag'] = data_new['Betrag'].str.replace(',', '.')
-print("after")
-print(data_new['Betrag'])
-# pd.to_numeric(data_new['Betrag'], errors='coerce')
-data_new['Saldo nach Buchung'] = data_new['Saldo nach Buchung'].str.replace(',', '.')
-# pd.to_numeric(data_new['Saldo nach Buchung'], errors='coerce')
+# print("before")
+# print(data_new['Betrag'])
+# data_new['Betrag'] = data_new['Betrag'].str.replace(',', '.')
+# print("after")
+# print(data_new['Betrag'])
+# # pd.to_numeric(data_new['Betrag'], errors='coerce')
+# data_new['Saldo nach Buchung'] = data_new['Saldo nach Buchung'].str.replace(',', '.')
+# # pd.to_numeric(data_new['Saldo nach Buchung'], errors='coerce')
 
 # Add new data to existing data
 # # backup existing data
 # shutil.copyfile("data/test_output/data_all.csv", "data/test_output/data_all_backup.csv")
 # index_col: read first column as index column
-data_all = pd.read_csv("data/test_output/data_all.csv",
-                       index_col=0, parse_dates=['Valutadatum'])
+data_all = pd.read_csv("data/output/data_all.csv", index_col=0, parse_dates=['Valutadatum'])
+
+count_rows_existing = len(data_all.index)
+
 data_tmp = pd.concat([data_all, data_new], axis=0, ignore_index=True)
 # # axis=0 is default = combine rows of input tables
 # # ignore_index=True: ignore existing index, set new index for all
 
+count_rows_data_tmp = len(data_tmp.index)
+
 data_all = data_tmp.drop_duplicates()
 
-data_all.to_csv("data/test_output/data_all.csv")  # index=False: not writing unnamed first column
+count_rows_data_all = len(data_all.index)
 
-print(data_all)
+# give information about rows
+print(f"Existing rows: {count_rows_existing}")
+print(f"New rows: {count_rows_new}")
+print(f"Total rows after import: {count_rows_data_tmp}")
+count_dropped = count_rows_data_tmp - count_rows_data_all
+print(f"Dropped rows: {count_dropped}")
+print(f"All rows: {count_rows_data_all}")
+
+# sort by date, newest first
+data_all = data_all.sort_values(by='Valutadatum', ascending=False)
+
+# reset index
+data_all = data_all.reset_index(drop=True)
+
+data_all.to_csv("data/output/data_all.csv")  # index=False: not writing unnamed first column
+
+# print(data_all)
 
 # tray.print_sum(data_new)
