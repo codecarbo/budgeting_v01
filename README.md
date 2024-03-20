@@ -13,4 +13,9 @@ TODO:
 
 20.03.24
 create import function (refactor code, put into function)
-think about / create basic evaluation functions (e.g. expenses for given month or within time frame)
+create basic evaluation functions (e.g. expenses for given month or within time frame)
+TODO: 
+  put evaluation in function
+  add Haushaltskonto to data
+  import all of last year
+
