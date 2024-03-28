@@ -15,7 +15,6 @@ def import_banking_csv(path):
     '''
     Import csv file from online banking, cleanup, remove duplicates and add to data_all.csv
     '''
-
     data_import = pd.read_csv(path, sep=';', on_bad_lines='warn')
     
     # Drop irrelevant columns

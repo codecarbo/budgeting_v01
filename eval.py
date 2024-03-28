@@ -42,17 +42,13 @@ def select_date_range(df, start_year, start_month, end_year, end_month):
     return df_masked
 
 
-def select_account(df, acc_name=[]):
-    # better to give account list...
-    if acc_name == ACC_S:
-        pass
-    elif acc_name == ACC_K:
-        pass
-    elif acc_name == ACC_H:
-        pass
-    else:
-        # all accounts
-        pass
+def select_account(df, acc_names=[]):
+    '''
+    Returns dataframe with selected accounts
+    '''
+    # return df.loc[df['IBAN Auftragskonto'] == acc_names]
+    return df.loc[df['IBAN Auftragskonto'].isin(acc_names)]
+    # how to set index new?
 
 
 def get_inc_exp_total(df):
