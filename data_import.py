@@ -12,6 +12,9 @@ PATH_DATA_ALL = 'data/output/data_all.csv'
 
 
 def import_banking_csv(path):
+    '''
+    Import csv file from online banking, cleanup, remove duplicates and add to data_all.csv
+    '''
 
     data_import = pd.read_csv(path, sep=';', on_bad_lines='warn')
     
@@ -63,3 +66,11 @@ def import_banking_csv(path):
     }
 
     return row_counts
+
+def read_data_all():
+    '''
+    Returns dataframe from data_all.csv
+    '''
+    data_all = pd.read_csv(PATH_DATA_ALL, index_col=0, parse_dates=['Valutadatum'])
+
+    return data_all
