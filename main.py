@@ -5,44 +5,23 @@ import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
 # no depreciated warning
 
-# Monthly inc/exp/total for every account and all accounts
-# generate list (dataframe and csv) and export/save
-# columns: account, year, month, inc, exp, total
+prg_run = True
 
-# 1. give month/year range
-# 2. get inc/exp/total of every account and all for year/month
-# # -> select date range function
-# # add function to select according to account -> select dataframe of specific account or all
-# 3. add to dataframe
-# 4. next month/year; go through all and create dataframe
-# 5. export dataframe to csv
+while prg_run:
 
-dict = {
-    'Konto': [],
-    'Name': [],
-    'Jahr': [],
-    'Monat': [],
-    'Einnahmen': [],
-    'Ausgaben': [],
-    'Überschuss': []
-}
+    user_input = input('import/eval/exit: ')
 
-df_new = pd.DataFrame(dict)
+    if user_input == 'import':
+        path = input('File path: ')
+        import_info = import_banking_csv(path)
+        print(import_info)
 
-df_all = read_data_all()
+    elif user_input == 'eval':
+        df_all = read_data_all()
+        dates = eval.get_date_info(df_all)
+        # print(dates['min'].year)
+        report = eval.create_acc_report(dates['min'].year, dates['max'].year)
+        print(report)
 
-years = range(2023, 2023 - 1, -1)
-months = range(12, 1 - 1, -1)
-
-for year in years:
-    # print(f'Jahr: {year}')
-    for month in months:
-        # print(f'Monat: {month}')
-        for acc in ACC_NUMS:
-            # print(f'Konto: {acc}')
-            df_tmp_date = eval.select_date_range(df_all, year, month, year, month)
-            df_tmp_acc = eval.select_account(df_tmp_date, [acc])
-            dict_tmp = eval.get_inc_exp_total(df_tmp_acc)
-            df_new.loc[len(df_new.index)] = [acc, 'name', year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
-
-print(df_new)
+    else:
+        prg_run = False

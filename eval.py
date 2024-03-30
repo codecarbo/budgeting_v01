@@ -73,3 +73,43 @@ def get_inc_exp_total(df):
     }
 
     return dict_ret
+
+
+def create_acc_report(start_year, end_year):
+    '''
+    Creates dataframe from data_all.csv with inc/exp/tot for every account monthly
+    '''
+    dict = {
+        'Konto': [],
+        'Jahr': [],
+        'Monat': [],
+        'Einnahmen': [],
+        'Ausgaben': [],
+        'Überschuss': []
+    }
+
+    df_new = pd.DataFrame(dict)
+
+    df_all = read_data_all()
+
+    years = range(end_year, start_year - 1, -1)
+    months = range(12, 1 - 1, -1)
+
+    for year in years:
+        # print(f'Jahr: {year}')
+        for month in months:
+            # print(f'Monat: {month}')
+            df_tmp_date = select_date_range(df_all, year, month, year, month)
+            # Skip empty results
+            if df_tmp_date.empty:
+                continue
+            for acc in ACC_DATA:
+                # print(f'Konto: {acc}')
+                df_tmp_acc = select_account(df_tmp_date, [acc[0]])
+                dict_tmp = get_inc_exp_total(df_tmp_acc)
+                df_new.loc[len(df_new.index)] = [acc[1], year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
+            # For all accounts
+            dict_tmp = get_inc_exp_total(df_tmp_date)
+            df_new.loc[len(df_new.index)] = ['alle', year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
+
+    return df_new

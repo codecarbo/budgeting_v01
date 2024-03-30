@@ -28,3 +28,10 @@ What to evaluate next?
     generate list (dataframe and csv) and export/save
     plot diagrams
   implement categories for income/expenses regarding 'Zahlungsempfänger', 'Verwendungszweck'
+
+29.03.24
+Created report function with basic evaluations
+Imported data for all accounts from 2023 and 2024
+  TODO:
+  check numbers, some seems to be doubled (12/2023)
+  add account number in report (to be able to filter for acc with eval function)
