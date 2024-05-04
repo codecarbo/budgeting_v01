@@ -20,8 +20,11 @@ while prg_run:
         df_all = read_data_all()
         dates = eval.get_date_info(df_all)
         # print(dates['min'].year)
-        report = eval.create_acc_report(dates['min'].year, dates['max'].year)
-        print(report)
+        report_all = eval.create_acc_report(dates['min'].year, dates['max'].year)
+        report_all_only = eval.select_account(report, [ACC_A])
+
+        print(report_all)
+        print(report_all_only)
 
     else:
         prg_run = False

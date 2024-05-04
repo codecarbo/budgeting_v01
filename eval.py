@@ -80,7 +80,8 @@ def create_acc_report(start_year, end_year):
     Creates dataframe from data_all.csv with inc/exp/tot for every account monthly
     '''
     dict = {
-        'Konto': [],
+        'IBAN Auftragskonto': [],
+        'Name': [],
         'Jahr': [],
         'Monat': [],
         'Einnahmen': [],
@@ -107,9 +108,10 @@ def create_acc_report(start_year, end_year):
                 # print(f'Konto: {acc}')
                 df_tmp_acc = select_account(df_tmp_date, [acc[0]])
                 dict_tmp = get_inc_exp_total(df_tmp_acc)
-                df_new.loc[len(df_new.index)] = [acc[1], year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
+                df_new.loc[len(df_new.index)] = [acc[0], acc[1], year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
             # For all accounts
             dict_tmp = get_inc_exp_total(df_tmp_date)
-            df_new.loc[len(df_new.index)] = ['alle', year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
+            df_new.loc[len(df_new.index)] = [ACC_DATA_ALL[3][0], ACC_DATA_ALL[3][1], 
+                                             year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
 
     return df_new
