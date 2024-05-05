@@ -29,11 +29,15 @@ def select_date_range(df, start_year, start_month, end_year, end_month):
     # # needs to be converted to datetime for comparison to work
     start_date = pd.to_datetime(date(start_year, start_month, 1))
     # For one month, enter same month and year as start and end; adjust end dates to next month
-    if start_month == 12 & end_month == 12:
+    if start_month == 12 and end_month == 12:
+        # if december, go to next year
         end_month = 1
         end_year = end_year + 1
+    else:
+        # add 1 to end month, because end month is excluded
+        end_month = end_month + 1
 
-    end_date = pd.to_datetime(date(end_year, end_month + 1, 1))
+    end_date = pd.to_datetime(date(end_year, end_month, 1))
     
     # Create binary mask for target date range; apply mask to data
     mask = (df['Valutadatum'] >= start_date) & (df['Valutadatum'] < end_date)
@@ -101,7 +105,7 @@ def create_acc_report(start_year, end_year):
         for month in months:
             # print(f'Monat: {month}')
             df_tmp_date = select_date_range(df_all, year, month, year, month)
-            # Skip empty results
+            # Skip empty months
             if df_tmp_date.empty:
                 continue
             for acc in ACC_DATA:
@@ -111,6 +115,9 @@ def create_acc_report(start_year, end_year):
                 df_new.loc[len(df_new.index)] = [acc[0], acc[1], year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
             # For all accounts
             dict_tmp = get_inc_exp_total(df_tmp_date)
+            # if month == 12 and year == 2023:
+            #     print(f'Jahr: {year}, Monat: {month}')
+            #     print(df_tmp_date)
             df_new.loc[len(df_new.index)] = [ACC_DATA_ALL[3][0], ACC_DATA_ALL[3][1], 
                                              year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
 
