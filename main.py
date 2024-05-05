@@ -28,7 +28,7 @@ while prg_run:
         print(report_all)
         print(report_all_only)
 
-        report_all_only.plot()
+        report_all_only.plot.bar(x='Datum', y='Überschuss')
         plt.show()
 
     else:

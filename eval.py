@@ -86,8 +86,7 @@ def create_acc_report(start_year, end_year):
     dict = {
         'IBAN Auftragskonto': [],
         'Name': [],
-        'Jahr': [],
-        'Monat': [],
+        'Datum': [],
         'Einnahmen': [],
         'Ausgaben': [],
         'Überschuss': []
@@ -108,17 +107,21 @@ def create_acc_report(start_year, end_year):
             # Skip empty months
             if df_tmp_date.empty:
                 continue
+
+            # Get max date of current month dataframe or eval list (for easier plotting)
+            date_max = max(df_tmp_date['Valutadatum'])
+
             for acc in ACC_DATA:
                 # print(f'Konto: {acc}')
                 df_tmp_acc = select_account(df_tmp_date, [acc[0]])
                 dict_tmp = get_inc_exp_total(df_tmp_acc)
-                df_new.loc[len(df_new.index)] = [acc[0], acc[1], year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
+                df_new.loc[len(df_new.index)] = [acc[0], acc[1], date_max, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
             # For all accounts
             dict_tmp = get_inc_exp_total(df_tmp_date)
             # if month == 12 and year == 2023:
             #     print(f'Jahr: {year}, Monat: {month}')
             #     print(df_tmp_date)
             df_new.loc[len(df_new.index)] = [ACC_DATA_ALL[3][0], ACC_DATA_ALL[3][1], 
-                                             year, month, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
+                                             date_max, dict_tmp['income'], dict_tmp['expenses'], dict_tmp['total']]
 
     return df_new
